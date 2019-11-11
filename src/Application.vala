@@ -19,8 +19,8 @@
 
 public class Pages.App : Gtk.Application {
     public App () {
-        Object(application_id: "com.github.tintou.pages",
-               flags: ApplicationFlags.FLAGS_NONE);
+        Object (application_id: "com.github.tintou.pages",
+                flags: ApplicationFlags.FLAGS_NONE);
     }
 
     protected override void activate () {

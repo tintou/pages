@@ -29,14 +29,16 @@ public class Pages.DocumentView : Gtk.Grid {
         }
     }
 
-    [CCode (cname="lok_doc_view_get_command_values", cheader_filename = "lok-helpers.h")]
-    public static extern string get_command_values (LOKDoc.View doc, string command);
-
     construct {
         
     }
 
     public void open_document (string path) {
+        if (doc != null) {
+            doc.destroy ();
+            doc = null;
+        }
+
         try {
             doc = new LOKDoc.View (null, null);
             doc.expand = true;
@@ -58,10 +60,21 @@ public class Pages.DocumentView : Gtk.Grid {
         doc.open_document.begin (path, "{}", null, (obj, res) => {
             try {
                 doc.open_document.end (res);
-                doc.set_edit (true);
+
+                //get_styles ();
             } catch (Error e) {
                 critical (e.message);
             }
+        });
+        doc.notify["is-initialized"].connect (() => {
+            if (get_document_type (doc) != LibreOfficeKit.DocumentType.TEXT) {
+                doc.destroy ();
+                doc = null;
+                return;
+            }
+
+            doc.set_edit (true);
+            critical ("HERE");
         });
     }
 
@@ -164,5 +177,39 @@ public class Pages.DocumentView : Gtk.Grid {
 
     public void paste () {
         doc.post_command (".uno:Paste", "{}", false);
+    }
+
+    public void insert_table (int columns = 4, int rows = 5) {
+        var builder = new Json.Builder ();
+        builder.begin_object ();
+        Pages.JsonUtils.add_long_value (builder, "Columns", columns);
+        Pages.JsonUtils.add_long_value (builder, "Rows", rows);
+        builder.end_object ();
+        var arg = Pages.JsonUtils.builder_to_string (builder);
+        doc.post_command (".uno:InsertTable", arg, false);
+    }
+
+    public void insert_image (string path = "/home/tintou/Images/Captures d'écran/Capture d'écran du 2019-11-11 13.01.39@2x.png") {
+        var builder = new Json.Builder ();
+        builder.begin_object ();
+        Pages.JsonUtils.add_string_value (builder, "FileName", path);
+        builder.end_object ();
+        var arg = Pages.JsonUtils.builder_to_string (builder);
+        doc.post_command (".uno:InsertGraphic", arg, false);
+    }
+
+    public void get_styles () {
+        Json.Parser parser = new Json.Parser ();
+        try {
+            parser.load_from_data (get_command_values (doc, ".uno:StyleApply"));
+            unowned Json.Node? node = parser.get_root ();
+            unowned Json.Object? command_values = node.get_object ().get_object_member ("commandValues");
+            command_values.get_array_member ("ParagraphStyles").foreach_element ((array, index, node) => {
+                critical (node.get_string ());
+            });
+        } catch (Error e) {
+            critical ("Unable to parse the string: %s\n", e.message);
+            return;
+        }
     }
 }

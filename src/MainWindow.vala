@@ -21,14 +21,16 @@ public class Pages.MainWindow : Gtk.ApplicationWindow {
 
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_QUIT = "quit";
-    public const string ACTION_ZOOM_DEFAULT = "zoom_default";
-    public const string ACTION_ZOOM_IN = "zoom_in";
-    public const string ACTION_ZOOM_OUT = "zoom_out";
+    public const string ACTION_ZOOM_DEFAULT = "zoom-default";
+    public const string ACTION_ZOOM_IN = "zoom-in";
+    public const string ACTION_ZOOM_OUT = "zoom-out";
     public const string ACTION_UNDO = "undo";
     public const string ACTION_REDO = "redo";
     public const string ACTION_COPY = "copy";
     public const string ACTION_CUT = "cut";
     public const string ACTION_PASTE = "paste";
+    public const string ACTION_INSERT_TABLE = "insert-table";
+    public const string ACTION_INSERT_IMAGE = "insert-image";
 
     private const GLib.ActionEntry[] ACTION_ENTRIES = {
         { ACTION_QUIT, action_quit },
@@ -39,7 +41,9 @@ public class Pages.MainWindow : Gtk.ApplicationWindow {
         { ACTION_REDO, action_redo },
         { ACTION_COPY, action_copy },
         { ACTION_CUT, action_cut },
-        { ACTION_PASTE, action_paste }
+        { ACTION_PASTE, action_paste },
+        { ACTION_INSERT_TABLE, action_insert_table },
+        { ACTION_INSERT_IMAGE, action_insert_image }
     };
 
     private Gtk.ProgressBar progress_bar;
@@ -145,5 +149,13 @@ public class Pages.MainWindow : Gtk.ApplicationWindow {
 
     private void action_paste (GLib.SimpleAction action, GLib.Variant? parameter) {
         doc.paste ();
+    }
+
+    private void action_insert_table (GLib.SimpleAction action, GLib.Variant? parameter) {
+        doc.insert_table ();
+    }
+
+    private void action_insert_image (GLib.SimpleAction action, GLib.Variant? parameter) {
+        doc.insert_image ();
     }
 }

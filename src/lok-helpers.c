@@ -31,3 +31,16 @@ lok_doc_view_get_command_values (LOKDocView* pDocView, const gchar *command)
   pClass = pDocument->pClass;
   return pClass->getCommandValues(pDocument, command);
 }
+
+LibreOfficeKitDocumentType
+lok_doc_view_get_document_type (LOKDocView* pDocView)
+{
+  LibreOfficeKitDocument* pDocument;
+  LibreOfficeKitDocumentClass *pClass;
+
+  g_assert (LOK_IS_DOC_VIEW (pDocView));
+
+  pDocument = lok_doc_view_get_document(pDocView);
+  pClass = pDocument->pClass;
+  return pClass->getDocumentType(pDocument);
+}

@@ -21,7 +21,9 @@
 #define __LOK_HELPERS_H__
 
 #include <LibreOfficeKit/LibreOfficeKitGtk.h>
+#include <LibreOfficeKit/LibreOfficeKitEnums.h>
 
 gchar *lok_doc_view_get_command_values (LOKDocView* pDocView, const gchar *command);
+LibreOfficeKitDocumentType lok_doc_view_get_document_type (LOKDocView* pDocView);
 
 #endif
