@@ -1,7 +1,13 @@
-project('com.github.tintou.pages', 'c', 'cpp', 'vala', version: '0.0.1')
+project('com.github.tintou.pages',
+    'c', 'cpp', 'vala',
+    version: '0.0.1',
+    default_options: [
+        'cpp_std=c++11'
+    ],)
 
 
 add_project_arguments('-DLOK_USE_UNSTABLE_API=1', language: 'c')
+add_project_arguments('-DLOK_USE_UNSTABLE_API=1', language: 'cpp')
 
 add_project_arguments('-DGETTEXT_PACKAGE="@0@"'.format (meson.project_name()), language: 'c')
 

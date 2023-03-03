@@ -18,21 +18,11 @@
  */
 
 #include "lok-helpers.h"
+#include <LibreOfficeKit/LibreOfficeKit.h>
+#include <LibreOfficeKit/LibreOfficeKitEnums.h>
+#include <LibreOfficeKit/LibreOfficeKitGtk.h>
 
-gchar *
-lok_doc_view_get_command_values (LOKDocView* pDocView, const gchar *command)
-{
-  LibreOfficeKitDocument* pDocument;
-  LibreOfficeKitDocumentClass *pClass;
-
-  g_assert (LOK_IS_DOC_VIEW (pDocView));
-
-  pDocument = lok_doc_view_get_document(pDocView);
-  pClass = pDocument->pClass;
-  return pClass->getCommandValues(pDocument, command);
-}
-
-LibreOfficeKitDocumentType
+int
 lok_doc_view_get_document_type (LOKDocView* pDocView)
 {
   LibreOfficeKitDocument* pDocument;

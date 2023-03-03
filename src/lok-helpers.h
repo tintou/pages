@@ -20,10 +20,14 @@
 #ifndef __LOK_HELPERS_H__
 #define __LOK_HELPERS_H__
 
-#include <LibreOfficeKit/LibreOfficeKitGtk.h>
-#include <LibreOfficeKit/LibreOfficeKitEnums.h>
+#include <glib.h>
 
-gchar *lok_doc_view_get_command_values (LOKDocView* pDocView, const gchar *command);
-LibreOfficeKitDocumentType lok_doc_view_get_document_type (LOKDocView* pDocView);
+typedef struct _LOKDocView        LOKDocView;
+
+G_BEGIN_DECLS
+
+int lok_doc_view_get_document_type (LOKDocView* pDocView);
+
+G_END_DECLS
 
 #endif

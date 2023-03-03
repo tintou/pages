@@ -42,8 +42,6 @@ public class Pages.DocumentView : Gtk.Grid {
         try {
             doc = new LOKDoc.View (null, null);
             doc.expand = true;
-            add (doc);
-            show_all ();
             notify_property ("has-document");
         } catch (Error e) {
             critical (e.message);
@@ -60,14 +58,15 @@ public class Pages.DocumentView : Gtk.Grid {
         doc.open_document.begin (path, "{}", null, (obj, res) => {
             try {
                 doc.open_document.end (res);
-
+                add (doc);
+                show_all ();
                 //get_styles ();
             } catch (Error e) {
                 critical (e.message);
             }
         });
         doc.notify["is-initialized"].connect (() => {
-            if (get_document_type (doc) != LibreOfficeKit.DocumentType.TEXT) {
+            if (get_document_type (doc) != 0) {
                 doc.destroy ();
                 doc = null;
                 return;
@@ -116,6 +115,7 @@ public class Pages.DocumentView : Gtk.Grid {
     private void parse_command_changed (string command) {
         string[] parts = command.split("=", 2);
 
+        critical (command);
         return_if_fail (parts.length >= 2);
 
         unowned Gtk.ApplicationWindow? window = (Gtk.ApplicationWindow) get_ancestor (typeof (Gtk.ApplicationWindow)) ;
@@ -201,7 +201,7 @@ public class Pages.DocumentView : Gtk.Grid {
     public void get_styles () {
         Json.Parser parser = new Json.Parser ();
         try {
-            parser.load_from_data (get_command_values (doc, ".uno:StyleApply"));
+            parser.load_from_data (doc.get_command_values (".uno:StyleApply"));
             unowned Json.Node? node = parser.get_root ();
             unowned Json.Object? command_values = node.get_object ().get_object_member ("commandValues");
             command_values.get_array_member ("ParagraphStyles").foreach_element ((array, index, node) => {
